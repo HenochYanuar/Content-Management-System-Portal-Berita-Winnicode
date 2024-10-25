@@ -51,9 +51,22 @@ const loginPost = async (req, res) => {
   } catch (error) {
     console.error('Error in loginPost:', error)
     res.status(500).render(errLayout, errMsg)
+
+  }
+}
+
+const logoutPost = (req, res) => {
+  try {
+    res.clearCookie('token')
+    res.status(200).redirect('/admin/login')
+
+  } catch (error) {
+    console.error('Error in logoutPost:', error)
+    res.status(500).render(errLayout, errMsg)
+
   }
 }
 
 module.exports = {
-  login, loginPost
+  login, loginPost, logoutPost
 }
