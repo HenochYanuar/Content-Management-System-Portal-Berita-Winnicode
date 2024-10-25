@@ -1,4 +1,5 @@
 const jwt = require('jsonwebtoken')
+const bcrypt = require('bcrypt')
 const { secret, expiresIn } = require('../config/jwt')
 const { errMsg, errLayout } = require('../utils/error')
 const userModel = require('../models/user.model')
@@ -17,7 +18,6 @@ const loginPost = async (req, res) => {
     }
 
     let user = await userModel.findByEmail(email)
-
     
     if (!user) {
       res.status(400).render('login/login', { message: 'Your email is not registered' })
@@ -36,7 +36,7 @@ const loginPost = async (req, res) => {
 
           res.cookie('token', token, { httpOnly: true, maxAge: 10800000 })
  
-          res.status(200).redirect('/dashboard');
+          res.status(200).redirect('/admin/dashboard')
 
         } else {
           res.status(400).render('login/login', { message: 'Your email has not been activated, please activate it first' })
