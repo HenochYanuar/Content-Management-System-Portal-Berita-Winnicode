@@ -1,0 +1,46 @@
+<div class="card shadow-lg">
+  <div class="card-header" style="background-color: #FF66C4; color: #fff;">
+    <div class="text-center "><h2>News Articles List</h2></div>
+  </div>
+  <div class="card-body">
+    <div class="row">
+      <div class="col-9">
+        <a class="btn btn-primary mb-3 p-2" href="/admin/articles/add"><i class="fas fa-plus"></i> Add News Article</a>
+      </div>
+    </div>
+    <table class="table table-bordered table-hover">
+      <thead class="table-hover" style="background-color: #819293;">
+        <tr style="color: white;">
+          <th class="col-lg-1">NO</th>
+          <th class="col-lg-3">Cover</th>
+          <th class="col-lg-4">Title</th>
+          <th class="col-lg-2">Category</th>
+          <th class="col-lg-2">Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% if (context.articles && context.articles.length > 0) { %>
+          <% context.articles.forEach((article, index) => { %>
+            <tr>
+              <td><%= index + 1 %></td>
+              <td>
+                <img src="<%= article.image_url %>" alt="<%= article.image_url %>" style="width: 100px; height: 100px;">
+              </td>
+              <td><%= article.title %></td>
+              <td><%= article.category %></td>
+              <td>
+                <a class="btn btn-info" href="//<%= article.id %>">Detail</a>
+                <a class="btn btn-danger" href="//<%= article.id %>">Delete</a>
+              </td>
+            </tr>
+          <% }) %>
+        <% } else { %>
+          <p class="text-center">No News Articles yet !!.</p>
+        <% } %>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+
+
