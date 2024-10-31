@@ -1,15 +1,39 @@
 const knex = require('knex')
-const knexConfig = require('../knexfile')
+const knexConfig = require('../config/knexfile')
 
-const db = knex(knexConfig.development) 
+const db = knex(knexConfig.development)
 
-const getAllArticles = async () => {
+const getAllArticles = async (page, limit, search) => {
   try {
-    return await db('articles').select()
+    const offset = (page - 1) * limit
+
+    const articles = await db('articles')
+      .where(function() {
+        if (search) {
+          this.where('title', 'like', `%${search}%`)
+              .orWhere('content', 'like', `%${search}%`)
+              .orWhere('category', 'like', `%${search}%`)
+        }
+      })
+      .orderBy('updated_at', 'desc')
+      .limit(limit)
+      .offset(offset)
+
+    const [{ count }] = await db('articles')
+      .where(function() {
+        if (search) {
+          this.where('title', 'like', `%${search}%`)
+              .orWhere('content', 'like', `%${search}%`)
+              .orWhere('category', 'like', `%${search}%`)
+        }
+      })
+      .count('id as count')
+
+    return { articles, totalItems: parseInt(count) }
 
   } catch (error) {
-    throw new Error('Error geting all news articles')
-  
+    throw new Error('Error getting all news articles')
+    
   }
 }
 
@@ -23,6 +47,26 @@ const create = async (data) => {
   }
 }
 
+const getOne = async (id) => {
+  try {
+    return await db('articles').where({ id }).first()
+
+  } catch (error) {
+    throw new Error('Error geting a article by id')
+
+  }
+}
+
+const deleteArticle = async (id) => {
+  try {
+    return await db('articles').where({ id }).del()
+
+  } catch (error) {
+    throw new Error('Error deleting article by id')
+
+  }
+}
+
 module.exports = {
-  getAllArticles, create
+  getAllArticles, create, getOne, deleteArticle
 }
