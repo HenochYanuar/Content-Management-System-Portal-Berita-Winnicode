@@ -1,13 +1,13 @@
 const knex = require('knex')
-const knexConfig = require('../knexfile')
+const knexConfig = require('../config/knexfile')
 
-const db = knex(knexConfig.development) 
+const db = knex(knexConfig.development)
 
 const findByEmail = async (email) => {
   try {
-      return await db('users').where({ email }).first()
+    return await db('users').where({ email }).first()
   } catch (error) {
-      throw new Error('Error finding user by email')
+    throw new Error('Error finding user by email')
   }
 }
 
