@@ -3,6 +3,16 @@ const knexConfig = require('../config/knexfile')
 
 const db = knex(knexConfig.development)
 
+const getCountAll = async () => {
+  try {
+    return await db('articles').count('id as count').first()
+    
+  } catch (error) {
+    throw new Error('Error getting all news articles')
+    
+  }
+}
+
 const getAllArticles = async (page, limit, search) => {
   try {
     const offset = (page - 1) * limit
@@ -68,5 +78,5 @@ const deleteArticle = async (id) => {
 }
 
 module.exports = {
-  getAllArticles, create, getOne, deleteArticle
+  getAllArticles, create, getOne, deleteArticle, getCountAll
 }

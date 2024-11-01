@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcrypt')
 const { secret, expiresIn } = require('../config/jwt')
-const { errMsg, errLayout } = require('../utils/error')
+const { err500, err404 } = require('../utils/error')
 const userModel = require('../models/user.model')
 
 const login = (req, res) => {
@@ -50,7 +50,7 @@ const loginPost = async (req, res) => {
 
   } catch (error) {
     console.error('Error in loginPost:', error)
-    res.status(500).render(errLayout, errMsg)
+    res.status(500).render('error/error', err500)
 
   }
 }
@@ -62,7 +62,7 @@ const logoutPost = (req, res) => {
 
   } catch (error) {
     console.error('Error in logoutPost:', error)
-    res.status(500).render(errLayout, errMsg)
+    res.status(500).render('error/error', err500)
 
   }
 }

@@ -35,7 +35,7 @@ const getAllArticles = async (req, res) => {
 
   } catch (error) {
     console.error('Error in getAllArticles:', error)
-    res.status(500).render(err500.layout, err500.message)
+    res.status(500).render('error/error', err500)
   }
 }
 
@@ -59,7 +59,7 @@ const formAddArticle = async (req, res) => {
 
   } catch (error) {
     console.error('Error in formAddArticle:', error)
-    res.status(500).render(err500.layout, err500.message)
+    res.status(500).render('error/error', err500)
   }
 }
 
@@ -69,18 +69,9 @@ const postAddArticle = async (req, res) => {
 
     let { articleTitle, content, category } = req.body
 
-    if (category[0] === "Lainnya") {
-      category = category[1]
-    } else {
-      category = category[0]
-    }
+    category = category[0] === "Lainnya" ? category = category[1] : category = category[0]
 
     const foto = req.file.filename
-
-    if (!user) {
-      res.status(400).render(err404.layout, err404.message)
-      return
-    } 
 
     const id = idCreator.createID()
 
@@ -103,7 +94,7 @@ const postAddArticle = async (req, res) => {
 
   } catch (error) {
     console.error('Error in postAddArticle:', error)
-    res.status(500).render(err500.layout, err500.message)
+    res.status(500).render('error/error', err500)
   }
 }
 
@@ -115,7 +106,7 @@ const getDetailArticle = async (req, res) => {
     const article = await articleModel.getOne(req.params.id)
 
     if (!article) {
-      res.status(404).render(err404.layout, err404.message)
+      res.status(404).render('error/error', err404)
       return
     }
     
@@ -129,7 +120,7 @@ const getDetailArticle = async (req, res) => {
 
   } catch (error) {
     console.error('Error in getDetailArticle:', error)
-    res.status(500).render(err500.layout, err500.message)
+    res.status(500).render('error/error', err500)
   }
 }
 
@@ -140,7 +131,7 @@ const deleteArticle = async (req, res) => {
     const article = await articleModel.getOne(id)
 
     if (!article) {
-      res.status(404).render(err404.layout, err404.message)
+      res.status(404).render('error/error', err404)
       return
     }
 
@@ -151,7 +142,7 @@ const deleteArticle = async (req, res) => {
     return res.status(201).redirect('/admin/articles')
   } catch (error) {
     console.error('Error in deleteArticle:', error)
-    res.status(500).render(err500.layout, err500.message)
+    res.status(500).render('error/error', err500)
   }
 }
 
