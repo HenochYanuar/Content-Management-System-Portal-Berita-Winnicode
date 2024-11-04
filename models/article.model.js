@@ -20,9 +20,9 @@ const getAllArticles = async (page, limit, search) => {
     const articles = await db('articles')
       .where(function() {
         if (search) {
-          this.where('title', 'like', `%${search}%`)
-              .orWhere('content', 'like', `%${search}%`)
-              .orWhere('category', 'like', `%${search}%`)
+          this.where(db.raw('LOWER(title)'), 'like', `%${search.toLowerCase()}%`)
+              .orWhere(db.raw('LOWER(content)'), 'like', `%${search.toLowerCase()}%`)
+              .orWhere(db.raw('LOWER(category)'), 'like', `%${search.toLowerCase()}%`)
         }
       })
       .orderBy('updated_at', 'desc')
@@ -32,9 +32,9 @@ const getAllArticles = async (page, limit, search) => {
     const [{ count }] = await db('articles')
       .where(function() {
         if (search) {
-          this.where('title', 'like', `%${search}%`)
-              .orWhere('content', 'like', `%${search}%`)
-              .orWhere('category', 'like', `%${search}%`)
+          this.where(db.raw('LOWER(title)'), 'like', `%${search.toLowerCase()}%`)
+              .orWhere(db.raw('LOWER(content)'), 'like', `%${search.toLowerCase()}%`)
+              .orWhere(db.raw('LOWER(category)'), 'like', `%${search.toLowerCase()}%`)
         }
       })
       .count('id as count')
@@ -43,7 +43,6 @@ const getAllArticles = async (page, limit, search) => {
 
   } catch (error) {
     throw new Error('Error getting all news articles')
-    
   }
 }
 
