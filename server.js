@@ -29,6 +29,21 @@ server.use(express.json())
 server.use(express.urlencoded({ extended: true }))
 server.use(cookieParser())
 
+const detectMobileBrowser = (req, res, next) => {
+  const userAgent = req.headers['user-agent']
+  const isMobile = /mobile|android|iphone|ipad|phone/i.test(userAgent)
+
+  const message = '403 | Device Not Supported'
+
+  if (isMobile) {
+    return res.status(403).render('error/error',{ message, title: message })
+  }
+
+  next()
+}
+
+server.use(detectMobileBrowser)
+
 server.use('/admin', loginRouter)
 
 server.use(expressLayouts)
@@ -38,6 +53,7 @@ server.use('/admin', dashboardRouter)
 server.use('/admin', articleRouter)
 
 server.use('/admin', userRouter)
+
 
 server.use((req, res, next) => {
   res.status(404).render('error/error', err404)
