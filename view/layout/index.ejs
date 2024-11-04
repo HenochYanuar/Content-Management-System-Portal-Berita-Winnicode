@@ -6,18 +6,18 @@
     <title>Winnicode Garuda Teknologi | <%= title %></title>
 
     
-    <link rel="shortcut icon" href="img/logo.png"/>
+    <link rel="shortcut icon" href="/img/logo.png"/>
 
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet"
       href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome Icons -->
     <link rel="stylesheet"
-      href="assets/plugins/fontawesome-free/css/all.min.css">
+      href="/assets/plugins/fontawesome-free/css/all.min.css">
     <!-- Theme style -->
-    <link rel="stylesheet" href="assets/dist/css/adminlte.min.css">
+    <link rel="stylesheet" href="/assets/dist/css/adminlte.min.css">
 
-    <link rel="stylesheet" href="css/dashboard.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
   </head>
   <body
     class="hold-transition layout-fixed sidebar-mini fixed layout-navbar-fixed sidebar-closed sidebar-collapse">
@@ -25,14 +25,16 @@
 
       <!-- Navbar -->
       <nav class="main-header navbar navbar-expand navbar-dark">
-
+        <ul class="navbar-nav">
+          <li class="nav-item">
+            <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+          </li>
+        </ul>
         <!-- Right navbar links -->
         <ul class="navbar-nav ml-auto">
           <li class="nav-item">
-            <a class="nav-link btn btn-outline-pink"
-              data-widget="control-sidebar" data-slide="true" href
-              role="button">
-              <i class="fas fa-door-open"></i> Logout
+            <a class="nav-link btn btn-outline-pink" data-widget="control-sidebar" data-slide="true" href role="button">
+              <i class="fas fa-door-open"></i>
             </a>
           </li>
         </ul>
@@ -43,7 +45,7 @@
       <aside class="main-sidebar sidebar-dark-primary elevation-4 fixed">
         <!-- Brand Logo -->
         <a href="#" class="brand-link">
-          <img src="img/logo.png" alt="WGT"
+          <img src="/img/logo.png" alt="WGT"
             class="brand-image img-circle elevation-3" style="opacity: .8">
           <span class="brand-text font-weight-light">Winnicode Garuda T</span>
         </a>
@@ -53,11 +55,11 @@
           <!-- Sidebar user panel (optional) -->
           <div class="user-panel mt-3 pb-3 mb-3 d-flex">
             <div class="image">
-              <img src="assets/dist/img/AdminLTELogo.png"
+              <img src="/assets/dist/img/AdminLTELogo.png"
                 class="img-circle elevation-2" alt="User Image">
             </div>
             <div class="info">
-              <a href="#" class="d-block">Admin</a>
+              <a href="#" class="d-block"><%= context.user.username %></a>
             </div>
           </div>
 
@@ -68,13 +70,22 @@
               <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
               <li class="nav-item active">
-                <a href="#" class="nav-link">
+                <a href="/admin/dashboard" class="nav-link">
                   <i class="nav-icon fas fa-house-user"></i>
                   <p>Dashboard</p>
                 </a>
               </li>
-              <li class="nav-item menu-open">
-
+              <li class="nav-item active">
+                <a href="/admin/articles" class="nav-link">
+                  <i class="nav-icon far fa-newspaper"></i>
+                  <p>News Articles</p>
+                </a>
+              </li>
+              <li class="nav-item active">
+                <a href="/admin/users-list" class="nav-link">
+                  <i class="nav-icon far fa-user"></i>
+                  <p>Users</p>
+                </a>
               </li>
             </ul>
           </nav>
@@ -113,7 +124,7 @@
         <div class="p-3">
           <h4>Log Out</h4><br>
           <h6>Click For LogOut</h6>
-          <a href="#" class="btn btn-danger font-weight-bolder ">
+          <a href="/admin/logout" class="btn btn-danger font-weight-bolder ">
             <i class="nav-icon fas fa-door-open"></i>
             Log Out
           </a>
@@ -131,10 +142,10 @@
     <!-- REQUIRED SCRIPTS -->
 
     <!-- jQuery -->
-    <script src="assets/plugins/jquery/jquery.min.js"></script>
+    <script src="/assets/plugins/jquery/jquery.min.js"></script>
     <!-- Bootstrap 4 -->
-    <script src="assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="/assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
     <!-- AdminLTE App -->
-    <script src="assets/dist/js/adminlte.min.js"></script>
+    <script src="/assets/dist/js/adminlte.min.js"></script>
   </body>
 </html>
