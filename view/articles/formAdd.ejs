@@ -6,7 +6,8 @@
     </div>
   </div>
   <div class="card-body">
-    <form action="/admin/articles" method="POST" enctype="multipart/form-data" novalidate>
+    <form action="/admin/articles" method="POST" enctype="multipart/form-data"
+      novalidate>
       <table class="table table-borderless">
         <tr>
           <td class="text-right col-2">
@@ -14,7 +15,8 @@
           </td>
           <td class="col-10">
             <div class="form-group">
-              <input required class="form-control w-100" type="text" id="articleTitle"
+              <input required class="form-control w-100" type="text"
+                id="articleTitle"
                 name="articleTitle">
             </div>
           </td>
@@ -40,6 +42,23 @@
           </td>
         </tr>
         <tr>
+          <td class="text-right col-2">
+            <label style="color: #838383;" for="category">Category</label>
+          </td>
+          <td class="col-10">
+            <div class="form-group">
+              <select required class="form-control w-100" type="text"
+                id="selectCategory" name="category">
+                <option selected disabled>Choose an Article Category</option>
+                <% for (let i = 0; i < context.categories.length; i++) { %>
+                <option value="<%= context.categories[i] %>"><%= context.categories[i] %></option>
+                <% } %>
+                <option>Lainnya</option>
+              </select>
+            </div>
+          </td>
+        </tr>
+        <tr>
           <td class="text-right">
             <label style="color: #838383;" for="content">Content</label>
           </td>
@@ -52,29 +71,15 @@
         </tr>
         <tr>
           <td class="text-right col-2">
-            <label style="color: #838383;" for="category">Category</label>
+            <label style="color: #838383;">Tags</label>
           </td>
           <td class="col-10">
-            <div class="form-group">
-              <select required class="form-control w-100" type="text"
-                id="selectCategory" name="category">
-                <option selected disabled>Choose an Article Category</option>
-                <% for (let i = 0; i < context.categories.length; i++) { %>
-                <option value="<%= context.categories[i] %>"><%=
-                  context.categories[i] %></option>
-                <% } %>
-                <option>Lainnya</option>
-              </select>
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td class="text-right col-2">
-            <label style="color: #838383;"for="category"></label>
-          </td>
-          <td class="col-10" id="customCategoryRow" style="display: none;">
-            <div class="form-group">
-              <input  class="form-control w-100" type="text" id="customCategoryInput" name="category" placeholder="Input The Category">
+            <div id="tagsContainer" class="form-group">
+              <div class="input-group mb-2">
+                <input class="form-control w-90 mr-3" required type="text" name="tags[]">
+                <button type="button" class="btn btn-outline-primary" style="width: 50px;"
+                  id="addTagBtn">+</button>
+              </div>
             </div>
           </td>
         </tr>
@@ -100,34 +105,72 @@
 
 <script>
   document.getElementById("selectCategory").addEventListener("change", function() {
-    const customCategoryRow = document.getElementById("customCategoryRow");
-    const customCategoryInput = document.getElementById("customCategoryInput");
+    const customCategoryRow = document.getElementById("customCategoryRow")
 
     if (this.value === "Lainnya") {
-      customCategoryRow.style.display = "";
-      customCategoryInput.setAttribute("required", "required");
+        if (!customCategoryRow) {
+            const newRow = `
+                <tr id="customCategoryRow">
+                  <td class="text-right col-2">
+                    <label style="color: #838383;"></label>
+                  </td>
+                  <td class="col-10">
+                    <div class="form-group">
+                      <input class="form-control w-100" type="text" id="customCategoryInput" name="category" placeholder="Input The Category" required>
+                    </div>
+                  </td>
+                </tr>
+            `
+            selectCategory.closest("tr").insertAdjacentHTML('afterend', newRow)
+        }
     } else {
-      customCategoryRow.style.display = "none";
-      customCategoryInput.removeAttribute("required");
-      customCategoryInput.value = ""; // Clear input if not required
+        if (customCategoryRow) customCategoryRow.remove()
     }
-  });
+  })
 
   document.querySelector('form').addEventListener('submit', function(event) {
-  tinymce.triggerSave(); // Sinkronisasi konten TinyMCE ke textarea
+  tinymce.triggerSave()
 
-  // Cek jika textarea "content" kosong
   if (!document.getElementById("content").value.trim()) {
-    alert("Content field is required.");
-    event.preventDefault(); // Batalkan pengiriman jika kosong
-    return;
+    alert("Content field is required.")
+    event.preventDefault()
+    return
   }
 
-  // Submit form setelah validasi
-  this.submit();
-  });
+  this.submit()
+  })
+
+  document.getElementById("addTagBtn").addEventListener("click", function() {
+    const tagsContainer = document.getElementById("tagsContainer")
+    const tagInputs = tagsContainer.querySelectorAll('input[name="tags[]"]')
+
+    if (tagInputs.length < 3) {
+      const newTagInputGroup = document.createElement("div")
+      newTagInputGroup.classList.add("input-group", "mb-2")
+
+      const newTagInput = document.createElement("input")
+      newTagInput.type = "text"
+      newTagInput.name = "tags[]"
+      newTagInput.classList.add("form-control", "w-90", "mr-3")
+
+      const removeTagBtn = document.createElement("button")
+      removeTagBtn.type = "button"
+      removeTagBtn.classList.add("btn", "btn-outline-danger")
+      removeTagBtn.style = "width: 50px;"
+      removeTagBtn.textContent = "-"
+      removeTagBtn.addEventListener("click", function() {
+        tagsContainer.removeChild(newTagInputGroup)
+      })
+
+      newTagInputGroup.appendChild(newTagInput)
+      newTagInputGroup.appendChild(removeTagBtn)
+      tagsContainer.appendChild(newTagInputGroup)
+    } else {
+      alert("maximum of 3 tags in 1 article")
+    }
+  })
 </script>
 <!-- Script element sourcing TinyMCE -->
-<script type="application/javascript" src= "/tinymce/tinymce.min.js"></script>
+<script type="application/javascript" src="/tinymce/tinymce.min.js"></script>
 <!-- Script element sourcing the TinyMCE configuration -->
-<script type="application/javascript" src= "/js/tinymce-config.js"></script>
+<script type="application/javascript" src="/js/tinymce-config.js"></script>

@@ -1,6 +1,7 @@
 const userModel = require('../models/user.model')
 const articleModel = require('../models/article.model')
 const mediaModel = require('../models/media.model')
+const tagsModel = require('../models/tags.model')
 const saveImgMiddleware = require('../middleware/saveImgMiddleware')
 const idCreator = require('../utils/idCreator')
 const { err500, err404 } = require('../utils/error')
@@ -49,8 +50,8 @@ const formAddArticle = async (req, res) => {
       'Travel & Wisata', 'Pendidikan', 'Keuangan'
     ]
 
-    const context = { 
-      user, categories 
+    const context = {
+      user, categories
     }
 
     const title = 'Form Add News Article'
@@ -65,31 +66,35 @@ const formAddArticle = async (req, res) => {
 
 const postAddArticle = async (req, res) => {
   try {
-    const user = await userModel.findByEmail(req.user.email)
+    let { articleTitle, content, category, tags } = req.body
 
-    let { articleTitle, content, category } = req.body
-
-    category = category[0] === "Lainnya" ? category = category[1] : category = category[0]
+    category = category[0] === "Lainnya" ? category = category[1] : category = category
 
     const foto = req.file.filename
 
     const id = idCreator.createID()
 
+    await tagsModel.create({
+      id,
+      tag: tags
+    })
+
     await articleModel.create({
-      id, 
-      title: articleTitle, 
-      content, 
+      id,
+      title: articleTitle,
+      content,
       image_url: `/img/articles_image/${foto}`,
-      category
+      category,
+      tags_id: id
     })
 
     await mediaModel.create({
-      id, 
+      id,
       file_name: foto,
       foto,
       file_url: `/img/articles_image/${foto}`
     })
-    
+
     res.status(201).redirect('/admin/articles')
 
   } catch (error) {
@@ -104,16 +109,26 @@ const getDetailArticle = async (req, res) => {
   try {
     const user = await userModel.findByEmail(req.user.email)
     const article = await articleModel.getOne(req.params.id)
-
+    let tags = await tagsModel.getOne(req.params.id)
+    
     if (!article) {
       res.status(404).render('error/error', err404)
       return
     }
     
-    const context = {
-      user, article
-    }
+    tags = tags.tag
     
+    const tagsArray = tags
+    .replace(/[{}]/g, '') 
+    .split(',')
+    .map(item => item.trim().replace(/['" ]/g, ""))
+
+    const context = {
+      user, 
+      article,
+      tag: tagsArray
+    }
+
     const title = 'Detail News Articel'
 
     return res.status(200).render('articles/detail', { context, title, layout })
@@ -138,6 +153,8 @@ const deleteArticle = async (req, res) => {
     await articleModel.deleteArticle(id)
 
     await mediaModel.deleteMedia(id)
+
+    await tagsModel.deleteTags(id)
 
     return res.status(201).redirect('/admin/articles')
   } catch (error) {
