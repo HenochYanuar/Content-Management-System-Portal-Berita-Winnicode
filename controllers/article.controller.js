@@ -85,7 +85,8 @@ const postAddArticle = async (req, res) => {
       content,
       image_url: `/img/articles_image/${foto}`,
       category,
-      tags_id: id
+      tags_id: id,
+      foto
     })
 
     await mediaModel.create({
