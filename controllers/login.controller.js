@@ -32,9 +32,13 @@ const loginPost = async (req, res) => {
             res.status(400).render('login/login', { message: 'This account is not admin role' })
           }
 
-          const token = jwt.sign({ id: user.id, email: user.email }, secret, { expiresIn })
+          const token = jwt.sign({ id: user.id, role: user.role, email: user.email }, secret, { expiresIn })
 
-          res.cookie('token', token, { httpOnly: true, maxAge: 10800000 })
+          res.cookie('token_admin', token, { 
+            httpOnly: true,
+            secure: true,
+            maxAge: 10800000 
+          })
  
           res.status(200).redirect('/admin/dashboard')
 
