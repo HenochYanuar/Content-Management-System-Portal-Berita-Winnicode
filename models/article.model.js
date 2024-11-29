@@ -6,10 +6,10 @@ const db = knex(knexConfig.development)
 const getCountAll = async () => {
   try {
     return await db('articles').count('id as count').first()
-    
+
   } catch (error) {
     throw new Error('Error getting all news articles')
-    
+
   }
 }
 
@@ -18,11 +18,17 @@ const getAllArticles = async (page, limit, search) => {
     const offset = (page - 1) * limit
 
     const articles = await db('articles')
-      .where(function() {
+      .select(
+        'articles.*',
+        'tags.tag as tag_name'
+      )
+      .leftJoin('tags', 'articles.tags_id', 'tags.id')
+      .where(function () {
         if (search) {
           this.where(db.raw('LOWER(title)'), 'like', `%${search.toLowerCase()}%`)
-              .orWhere(db.raw('LOWER(content)'), 'like', `%${search.toLowerCase()}%`)
-              .orWhere(db.raw('LOWER(category)'), 'like', `%${search.toLowerCase()}%`)
+            .orWhere(db.raw('LOWER(content)'), 'like', `%${search.toLowerCase()}%`)
+            .orWhere(db.raw('LOWER(category)'), 'like', `%${search.toLowerCase()}%`)
+            .orWhere(db.raw('LOWER(tags.tag)'), 'like', `%${search.toLowerCase()}%`)
         }
       })
       .orderBy('updated_at', 'desc')
@@ -30,19 +36,21 @@ const getAllArticles = async (page, limit, search) => {
       .offset(offset)
 
     const [{ count }] = await db('articles')
-      .where(function() {
+      .leftJoin('tags', 'articles.tags_id', 'tags.id')
+      .where(function () {
         if (search) {
           this.where(db.raw('LOWER(title)'), 'like', `%${search.toLowerCase()}%`)
-              .orWhere(db.raw('LOWER(content)'), 'like', `%${search.toLowerCase()}%`)
-              .orWhere(db.raw('LOWER(category)'), 'like', `%${search.toLowerCase()}%`)
+            .orWhere(db.raw('LOWER(content)'), 'like', `%${search.toLowerCase()}%`)
+            .orWhere(db.raw('LOWER(category)'), 'like', `%${search.toLowerCase()}%`)
+            .orWhere(db.raw('LOWER(tags.tag)'), 'like', `%${search.toLowerCase()}%`)
         }
       })
-      .count('id as count')
+      .count('articles.id as count')
 
     return { articles, totalItems: parseInt(count) }
 
   } catch (error) {
-    throw new Error('Error getting all news articles')
+    throw new Error('Error getting all news articles' + error.message)
   }
 }
 
