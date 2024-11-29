@@ -61,7 +61,7 @@ const loginPost = async (req, res) => {
 
 const logoutPost = (req, res) => {
   try {
-    res.clearCookie('token')
+    res.clearCookie('token_admin')
     res.status(200).redirect('/admin/login')
 
   } catch (error) {

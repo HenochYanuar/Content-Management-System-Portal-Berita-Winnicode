@@ -1,3 +1,4 @@
+require('dotenv').config()
 const express = require('express')
 const expressLayouts = require('express-ejs-layouts')
 const jwt = require('jsonwebtoken')
@@ -11,7 +12,7 @@ const { dashboardRouter } = require('./routers/dashboard.route')
 const { articleRouter } = require('./routers/article.route')
 const { userRouter } = require('./routers/user.route')
 
-const port = 8000
+const port = process.env.PORT
 
 const server = express()
 
